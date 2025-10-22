@@ -5,7 +5,6 @@
 # The max depth of a game tree is 9 plys total which is one for each cell on the board
 
 import math
-import random
 import time
 import os
 
@@ -96,12 +95,15 @@ def get_user_move(state):
     Prompts the user for their move and returns it as a tuple (row, col).
     """
     while True:
+        try:
             move = int(input("\nEnter your move (1-9): ")) - 1
             row, col = divmod(move, 3)
             if (row, col) in get_available_moves(state):
                 return (row, col)
             else:
                 print("Invalid move. Try again.")
+        except (ValueError, IndexError):
+            print("Invalid input. Please enter a number between 1 and 9.")
 
 def check_winner(state):
     """
@@ -131,7 +133,7 @@ def is_draw(state):
 
 def print_menu():
     # Prints the game menu and prompts for user choice.
-    print("1. Play a Game!")
+    print("\n1. Play a Game!")
     print("2. Clear Terminal")
     print("3. Exit")
     choice = None
@@ -147,16 +149,11 @@ def reset_state():
 
 def play_game():
     # Will add option for user to choose to go first or second later
-    #choice = input("Do you want to go first? (y/n): ").lower()
+    #
     state = reset_state()
     choice = 'y'
     user_turn = choice == 'y'
-    game_over = False
-    # Will implement score tracking later
-    user_win_counter = 0
-    ai_win_counter = 0
-
-    while not game_over:
+    while True:
         print_state_with_positions(state)
         print_state(state)
         if user_turn:
@@ -174,33 +171,58 @@ def play_game():
             print_state(state)
             if winner == 'X':
                 print("\nCongratulations! You win!")
+                return True
             else:
                 print("\nAI wins! Better luck next time.")
-            game_over = True
+                return False
         elif is_draw(state):
-            print_state(state)
             print("\nIt's a draw!")
-            game_over = True
+            return None
         else:
             user_turn = not user_turn
+
+def print_win_counters(user_wins, ai_wins):
+    # Just a helper function to print the win counters and messages (to keep the player addicted)
+    print(f"You have won {user_wins} time(s).")
+    print(f"The AI has won {ai_wins} time(s).")
+    # The user will never win against minimax but this is just for fun
+    if user_wins > ai_wins:
+        print("You are smarter than our AI overlords (you cheated didn't you!)")
+    elif ai_wins > user_wins:
+        print("The AI is taking over! Resistance is futile.")
+    elif user_wins == ai_wins and user_wins != 0:
+        print("It's a tie so far. Play more to break the tie!")
 
 if __name__ == "__main__":
     # Initial empty board
     state = [[" " for _ in range(3)] for _ in range(3)]
 
-    print('=' * 60)
+    print('=' * 67)
     print("Welcome to Aiden's Tic-Tac-Toe!")
     print("You will be playing against an AI using the Minimax algorithm.")
-    print('=' * 60 + '\n')
+    print("Try to beat the AI if you can! ")
+    print("(You can't...because minimax is unbeatable!)")
+    print('=' * 67)
 
     # Print the initial state
     # print_state_with_positions(state)
     # print_state(state)
 
+    user_win_counter = 0
+    ai_win_counter = 0
+
     # Main game loop
     while True: 
         choice = print_menu()
         if choice == '1':
-            play_game()
+            who_won = play_game()
+            if who_won is True:
+                user_win_counter += 1
+            elif who_won is False:
+                ai_win_counter += 1
+            print_win_counters(user_win_counter, ai_win_counter)
         elif choice == '2':
             os.system('cls')
+        elif choice == '3':
+            print("Thanks for playing! Goodbye.")
+            break
