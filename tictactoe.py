@@ -68,6 +68,7 @@ def minimax(state, depth, is_maximizing):
         return best_score
     # If it's the minimizing player's turn (User)
     else:
+        # Initialize best score to positive infinity so any real score will be lower.
         best_score = math.inf
         for (r, c) in get_available_moves(state):
             state[r][c] = 'X'
@@ -81,6 +82,7 @@ def get_ai_move(state):
     Determines the best move for the AI using the minimax algorithm.
     Returns the move as a tuple (row, col).
     """
+    # Initialize best score to negative infinity so any real score will be higher.
     best_score = -math.inf
     best_move = None
     for (r, c) in get_available_moves(state):
@@ -223,7 +225,9 @@ if __name__ == "__main__":
 
     # Main game loop
     while True: 
+        # Show menu and get user choice
         choice = print_menu()
+        # Play game
         if choice == '1':
             first = input("Do you want to go first? (y/n): ").lower()
             if first == 'y':
@@ -235,8 +239,10 @@ if __name__ == "__main__":
             elif who_won is False:
                 ai_win_counter += 1
             print_win_counters(user_win_counter, ai_win_counter)
+        # Clear terminal
         elif choice == '2':
             os.system('cls')
+        # Exit
         elif choice == '3':
             print("Thanks for playing! Goodbye.")
             break
