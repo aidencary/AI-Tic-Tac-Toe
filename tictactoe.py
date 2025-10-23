@@ -45,6 +45,8 @@ def minimax(state, depth, is_maximizing):
     Minimax algorithm to determine the best move for the AI.
     """
     # Terminal cases
+    # if game.IS-TERMINAL(state) in MAX-VALUE and MIN-VALUE
+    winner = check_winner(state)
     winner = check_winner(state)
     if winner == 'O':
         # AI is maximizing player
@@ -56,42 +58,57 @@ def minimax(state, depth, is_maximizing):
         return 0
 
     # Recursive cases
-    # If it's the maximizing player's turn (AI)
+    # if To-Move(s) = MAX
     if is_maximizing:
-        # Initialize best score to negative infinity so any real score will be higher.
+        # v <-- -infinity
         best_score = -math.inf
+        # for each a in game.ACTIONS(state) do:
         for (r, c) in get_available_moves(state):
             state[r][c] = 'O'
+            # Recursively call minimax, flipping is_maximizing to False (now minimizing)
             score = minimax(state, depth + 1, False)
             state[r][c] = " "
+            # if v2 > v then v <-- v2
             best_score = max(score, best_score)
+        # return v (returns only v, not the move)
         return best_score
-    # If it's the minimizing player's turn (User)
+    # If To-Move(s) = MIN
     else:
-        # Initialize best score to positive infinity so any real score will be lower.
+        # v <-- infinity
         best_score = math.inf
+        # for each a in game.ACTIONS(state) do:
         for (r, c) in get_available_moves(state):
             state[r][c] = 'X'
+            # Recursively call minimax, flipping is_maximizing to True (now maximizing)
             score = minimax(state, depth + 1, True)
             state[r][c] = " "
+            # if v2 < v then v <-- v2
             best_score = min(score, best_score)
+        # return v (returns only v, not the move)
         return best_score
     
 def get_ai_move(state):
     """
     Determines the best move for the AI using the minimax algorithm.
     Returns the move as a tuple (row, col).
+    MINIMAX-SEARCH(game, state)
     """
-    # Initialize best score to negative infinity so any real score will be higher.
+    # v <-- -infinity
     best_score = -math.inf
+    # This stores the 'a' part of the (v, move) pair
     best_move = None
+    # for each a in game.ACTIONS(state)
     for (r, c) in get_available_moves(state):
         state[r][c] = 'O'
-        score = minimax(state, 0, False)
+        # v2, a2 <-- MIN-VALUE(game, game.RESULT(state, a))
+        score = minimax(state, 0, False) # returns the score (v2)
         state[r][c] = " "
+        # if v2 > v then
         if score > best_score:
+            # Corresponds to v, move <-- v2, a
             best_score = score
             best_move = (r, c)
+    # return move
     return best_move
 
 def get_user_move(state):
@@ -195,12 +212,12 @@ def print_win_counters(user_wins, ai_wins):
     # Just a helper function to print the win counters and messages (to keep the player addicted)
     print(f"You have won {user_wins} time(s).")
     print(f"The AI has won {ai_wins} time(s).")
-    # The user will never win against minimax but this is just for fun
+    # The user will never win against minimax (if algorithm works properly) but just in case
     if user_wins > ai_wins:
         print("You are smarter than our AI overlords (you cheated didn't you!)")
     elif ai_wins > user_wins:
         print("The AI is taking over! Resistance is futile.")
-    # This also will never happen
+    # This also will never happen (if algorithm works properly)
     elif user_wins == ai_wins and user_wins != 0:
         print("It's a tie so far. Play more to break the tie!")
 
@@ -215,7 +232,7 @@ if __name__ == "__main__":
     print("(You can't...because minimax is unbeatable!)")
     print('=' * 67)
 
-    # Print the initial state
+    # Test print the initial state
     # print_state_with_positions(state)
     # print_state(state)
     
