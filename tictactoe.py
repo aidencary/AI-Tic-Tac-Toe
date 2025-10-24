@@ -47,7 +47,6 @@ def minimax(state, depth, is_maximizing):
     # Terminal cases
     # if game.IS-TERMINAL(state) in MAX-VALUE and MIN-VALUE
     winner = check_winner(state)
-    winner = check_winner(state)
     if winner == 'O':
         # AI is maximizing player
         return 10 - depth
