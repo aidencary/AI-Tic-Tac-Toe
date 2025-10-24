@@ -9,14 +9,6 @@ import time
 import os
 
 def print_state(state):
-    # Prints the Tic-Tac-Toe board
-    print(f'\n {state[0][0]} | {state[0][1]} | {state[0][2]} ')
-    print('---+---+---')
-    print(f' {state[1][0]} | {state[1][1]} | {state[1][2]} ')
-    print('---+---+---')
-    print(f' {state[2][0]} | {state[2][1]} | {state[2][2]} ')
-
-def print_state_with_positions(state):
     # Prints the Tic-Tac-Toe board with position numbers for user reference
     print("Positions:\n")
     print(f' 1 | 2 | 3 ')
@@ -25,6 +17,13 @@ def print_state_with_positions(state):
     print('---+---+---')
     print(f' 7 | 8 | 9 ')
     print("\n==========================\n")
+    
+    # Prints the current state of the Tic-Tac-Toe board
+    print(f'\n {state[0][0]} | {state[0][1]} | {state[0][2]} ')
+    print('---+---+---')
+    print(f' {state[1][0]} | {state[1][1]} | {state[1][2]} ')
+    print('---+---+---')
+    print(f' {state[2][0]} | {state[2][1]} | {state[2][2]} ')
 
 def get_available_moves(state):
     """
@@ -178,13 +177,15 @@ def play_game(user_starts=True):
 
     # Game loop
     while True:
+        # Clear terminal and print current state
         os.system('cls')
-        print_state_with_positions(state)
         print(f"Turn: {turn}")
         print_state(state)
+        # Get move from user
         if user_turn:
             row, col = get_user_move(state)
             state[row][col] = user_char
+        # Get move from AI
         else:
             print("\nAI is making a move...")
             # Added to simulate thinking time
@@ -192,6 +193,7 @@ def play_game(user_starts=True):
             row, col = get_ai_move(state)
             state[row][col] = ai_char
         winner = check_winner(state)
+        # Check for terminal state
         if winner:
             print_state(state)
             if winner == user_char:
@@ -204,6 +206,7 @@ def play_game(user_starts=True):
             print("\nIt's a draw!")
             return None
         else:
+            # Switch turns
             user_turn = not user_turn
             turn += 1
 
@@ -229,11 +232,8 @@ if __name__ == "__main__":
     print("You will be playing against an AI using the Minimax algorithm.")
     print("Try to beat the AI if you can! ")
     print("(You can't...because minimax is unbeatable!)")
+    print("First player is 'X', second player is 'O'.")
     print('=' * 67)
-
-    # Test print the initial state
-    # print_state_with_positions(state)
-    # print_state(state)
     
     # Win counters
     user_win_counter = 0
